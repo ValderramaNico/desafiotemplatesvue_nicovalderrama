@@ -1,7 +1,7 @@
 <template>
   <div class="main-container">
     <!-- contenedor de inputs -->
-    <aside class="inputs-container">
+    <form class="inputs-container">
       <div class="input-section">
         <label class="label-title" for="">Color de fondo</label>
         <input
@@ -54,18 +54,10 @@
       </div>
       <div class="input-section">
         <label class="label-title">Tipografía</label>
-        <select
-          v-model="textStyle"
-          class="text-style"
-          name="style-selection"
-          id=""
-        >
-          <option value="normal">Normal</option>
-          <option value="italic">Cursiva</option>
-          <option value="line-through">Tachada</option>
-          <option value="underline">Subrayada</option>
-          <option value="underline-italic">Subrayada cursiva</option>
-          <option value="line-through-italic">Tachada cursiva</option>
+        <select v-model="textStyle" class="text-style" name="style-selection">
+          <option v-for="(style, key) in textStyles" :key="key" :value="key">
+            {{ style.label }}
+          </option>
         </select>
       </div>
       <div class="input-section">
@@ -106,12 +98,11 @@
           </div>
         </div>
       </div>
-    </aside>
+    </form>
     <!-- cuadrado a recibir variables de estilo -->
     <div class="square-container">
       <div
         class="square"
-        id="square"
         :style="{
           backgroundColor: squarebackground,
           color: squaretext,
@@ -121,9 +112,15 @@
         <span
           class="square-text"
           v-show="showSpan"
-          :style="[textStyles[textStyle], fontSizeRadio[fontSizesRadio]]"
-          >{{ contenido }}</span
+          :class="{
+          [textStyles[textStyle].class]: true,
+          'font-small': fontSizesRadio === 'pequeño',
+          'font-normal': fontSizesRadio === 'normal',
+          'font-large': fontSizesRadio === 'grande',
+        }"
         >
+          {{ contenido }}
+        </span>
       </div>
     </div>
   </div>
@@ -138,27 +135,22 @@ export default {
       showSpan: true, //on y off del span
       borde: "0", //valor del borde en 0
       contenido: "", //contenido del span
-      textStyle: "normal", //tipografía en su valor inicial
+      textStyle: "normal", // tipografía en su valor inicial
       textStyles: {
-        normal: { fontStyle: "normal" },
-        italic: { fontStyle: "italic" },
-        "line-through": { textDecoration: "line-through" },
+        normal: { label: "Normal", class: "text-normal" },
+        italic: { label: "Cursiva", class: "text-italic" },
+        "line-through": { label: "Tachada", class: "text-line-through" },
         "line-through-italic": {
-          fontStyle: "italic",
-          textDecoration: "line-through",
+          label: "Tachada cursiva",
+          class: "text-line-through-italic",
         },
-        underline: { textDecoration: "underline" },
+        underline: { label: "Subrayada", class: "text-underline" },
         "underline-italic": {
-          fontStyle: "italic",
-          textDecoration: "underline",
+          label: "Subrayada cursiva",
+          class: "text-underline-italic",
         },
       },
       fontSizesRadio: "",
-      fontSizeRadio: {
-        pequeño: { fontSize: "12px" },
-        normal: { fontSize: "16px" },
-        grande: { fontSize: "32px" },
-      },
     };
   },
   name: "App",
@@ -218,6 +210,44 @@ export default {
 .form-radio {
   display: flex;
   gap: 10%;
+}
+
+.text-normal {
+  font-style: normal;
+}
+
+.text-italic {
+  font-style: italic;
+}
+
+.text-line-through {
+  text-decoration: line-through;
+}
+
+.text-line-through-italic {
+  font-style: italic;
+  text-decoration: line-through;
+}
+
+.text-underline {
+  text-decoration: underline;
+}
+
+.text-underline-italic {
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.font-small {
+  font-size: 12px; /* Tamaño de fuente pequeño */
+}
+
+.font-normal {
+  font-size: 16px; /* Tamaño de fuente normal */
+}
+
+.font-large {
+  font-size: 32px; /* Tamaño de fuente grande */
 }
 
 /* CSS de inputs */
